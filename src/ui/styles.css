@@ -145,6 +145,11 @@
   outline-offset: 2px;
 }
 
+.t-close svg {
+  width: 24px;
+  height: 24px;
+}
+
 /* ===== Animations (GPU-friendly: transform/opacity) ===== */
 :root {
   --t-exit-ms: 180;
@@ -167,6 +172,7 @@
   }
   .t-item.leaving {
     animation: t-out var(--t-exit-ms) ms ease-in both;
+    will-change: transform, opacity;
   }
 }
 

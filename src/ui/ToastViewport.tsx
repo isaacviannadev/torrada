@@ -64,13 +64,33 @@ export function ToastViewport({
   useEffect(() => {
     _store.setConfig({
       beforeDismiss: (id) => {
+        console.log(
+          '🔴 beforeDismiss called for:',
+          id,
+          'exitDelay:',
+          exitDelay
+        );
         setLeaving((s) => new Set(s).add(id));
         return new Promise<void>((resolve) => {
-          setTimeout(() => resolve(), exitDelay);
+          console.log('⏰ Setting timeout for:', exitDelay, 'ms');
+          setTimeout(() => {
+            console.log('✅ Timeout resolved for:', id);
+            resolve();
+          }, exitDelay);
         });
       },
     });
   }, [_store, exitDelay]);
+
+  // Atualiza a variável CSS para sincronizar com a animação
+  useEffect(() => {
+    if (typeof document !== 'undefined') {
+      document.documentElement.style.setProperty(
+        '--t-exit-ms',
+        `${animationMs}`
+      );
+    }
+  }, [animationMs]);
 
   const node = (
     <div
@@ -89,11 +109,14 @@ export function ToastViewport({
           onClose={dismiss}
           announce={announce}
           leaving={leaving.has(t.id)}
+          animationMs={animationMs}
           onExited={() => {
+            console.log('🚪 onExited called for:', t.id);
             setLeaving((s) => {
               if (!s.has(t.id)) return s;
               const next = new Set(s);
               next.delete(t.id);
+              console.log('🗑️ Removed from leaving set:', t.id);
               return next;
             });
           }}
