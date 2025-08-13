@@ -1,54 +1,34 @@
 # Torrada — React Toast Notification System
 
-A lightweight, accessible, and customizable **toast** system for React. It fulfills the assessment requirements:
-- **Core:** create, stack, auto‑dismiss, and manual dismiss.
-- **Theming & Customization:** CSS variables–based theming and configurable positioning.
-- **Animation & Performance:** smooth enter/exit, no layout shift, `prefers-reduced-motion` honored.
-- **Accessibility:** screen‑reader announcements, does not steal focus, keyboard (Esc to close).
-- **Testing:** unit, integration (hook), and E2E.
+[![npm version](https://img.shields.io/npm/v/torrada.svg)](https://www.npmjs.com/package/torrada)
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 
----
+A lightweight, accessible, and customizable **toast** system for React. Easy to use with full accessibility support and smooth animations.
 
-## Overview & Design Rationale
-
-**Architecture**
-- **Headless store** (no UI) built with `useSyncExternalStore` → minimal re‑renders and a small API surface.
-- **Viewport** rendered via **portal** to `document.body` → avoids **layout shift** (CLS ≈ 0) and layout interference.
-- **UI skin** implemented with **CSS variables** → easy theming and branding without locking consumers.
-- **Exit control:** `beforeDismiss` hook in the store (injected by the Viewport) to **wait for exit animation** before removing the node, preventing jank.
-
-**Trade‑offs**
-- No animation dependencies: we use **pure CSS** (`transform`/`opacity`) for simplicity and performance.
-- Minimal global state: we do not push the toast array through Context to avoid app‑wide re‑renders.
-
----
-
-## Setup (Repository)
+## 🚀 Installation
 
 ```bash
-# install deps
-npm i
-
-# run demo app (opens a simple page at /)
-npm run dev
-
-# build the library (types + bundled output)
-npm run build
+npm install torrada
 ```
 
----
+**Requirements:** React 18+ and React DOM 18+
 
-## Usage Examples
+## 📖 Quick Start
 
-### Basic
+### Basic Usage
 
 ```tsx
 import { ToastProvider, ToastViewport, useToast } from "torrada";
 
 function Page() {
   const { toast } = useToast();
+  
   return (
-    <button onClick={() => toast({ kind: "success", title: "Saved!", description: "All set." })}>
+    <button onClick={() => toast({ 
+      kind: "success", 
+      title: "Saved!", 
+      description: "All set." 
+    })}>
       Save
     </button>
   );
@@ -64,41 +44,47 @@ export function App() {
 }
 ```
 
-### Update / Dismiss
+### Advanced Features
 
 ```tsx
 const { toast, update, dismiss, dismissAll } = useToast();
-const id = toast({ title: "Uploading…" });
+
+// Create toast
+const id = toast({ title: "Uploading..." });
+
+// Update toast
 update(id, { title: "Uploaded", kind: "success", duration: 2500 });
+
+// Close toasts
 dismiss(id);    // close one
 dismissAll();   // close all
 ```
 
-### Provider Options
+## ⚙️ Configuration
+
+### ToastProvider
 
 ```tsx
 <ToastProvider
-  max={5}                 // max number of stacked toasts
-  defaultDuration={5000}  // default duration (ms)
+  max={5}                 // maximum number of stacked toasts
+  defaultDuration={5000}  // default duration in ms
 />
 ```
 
-### Viewport Options
+### ToastViewport
 
 ```tsx
 <ToastViewport
   position="top-right"              // top|bottom x left|right|center
   theme="dark"                      // light|dark
-  announce="polite"                 // polite|assertive for SR
-  animationMs={180}                 // exit duration (0 when reduced-motion is on)
+  announce="polite"                 // polite|assertive for screen readers
+  animationMs={180}                 // exit animation duration
 />
 ```
 
----
+## 🎨 Customization & Theming
 
-## Theming & Customization
-
-The UI uses **CSS variables**. Override them in your app theme:
+The system uses **CSS variables** for easy customization:
 
 ```css
 :root {
@@ -117,76 +103,38 @@ The UI uses **CSS variables**. Override them in your app theme:
 }
 ```
 
-**Helpful classes**
+**Useful classes:**
 - `.t-viewport` + position: `t-top-right`, `t-top-left`, `t-bottom-right`, `t-bottom-left`, `t-top-center`, `t-bottom-center`
 - Item: `.t-item` + kind: `.success | .error | .info | .warning`
 
-**Theme**
-- `ToastViewport` sets `data-theme="light|dark"`. Create additional themes with `[data-theme="…"]` and override variables.
+## ♿ Accessibility
+
+- **Live regions:** each toast uses `role="status"` + `aria-live="polite"` by default
+- **Focus:** toasts **do not steal focus** when appearing
+- **Keyboard:** `Tab` to close button, `Enter/Space` to activate, `Esc` to close
+- **Screen readers:** full support with automatic announcements
+- **Reduced motion:** respects `prefers-reduced-motion`
+
+## ⚡ Performance
+
+- **Zero CLS:** Viewport uses `position: fixed` to avoid layout shifts
+- **GPU-optimized animations:** only `opacity` and `transform` for performance
+- **Minimal re-renders:** uses `useSyncExternalStore` for optimization
+- **Animation timing:** enter and exit in 180ms
 
 ---
 
-## Accessibility Notes
+## 🏗️ Development & Contributing
 
-- **Live regions:** each toast uses `role="status"` + `aria-live="polite"` by default. Errors use `role="alert"` / `aria-live="assertive"`. `aria-atomic="true"` ensures the whole block is read.
-- **Focus:** toasts **do not steal focus** on mount. Close via **Esc** when focus is inside the toast; close button has `aria-label="Close notification"`.
-- **Keyboard:** `Tab` reaches the close button; `Enter/Space` activates; `Esc` closes.
-- **Reduced motion:** honored via `prefers-reduced-motion`; animations disabled/shortened accordingly.
+For detailed information about the project architecture, testing, and development setup, see **[DEVELOPMENT.md](./DEVELOPMENT.md)**.
 
----
+This includes:
+- Project structure and architecture details
+- Testing strategy (unit, integration, E2E)
+- Development setup and workflow
+- Performance benchmarks
+- Contributing guidelines
 
-## Animation & Performance
-
-- **Zero CLS:** Viewport uses `position: fixed`.
-- **GPU‑friendly animations:** only `opacity` and `transform`.
-- **Budgets**
-  - Enter: **180 ms**
-  - Exit: **180 ms**
-  - Expected CLS: **≈ 0**
-- **How to measure**
-  - **DevTools Performance**: record FPS/timeline while spawning multiple toasts.
-  - **Lighthouse**: verify CLS ~0.
-  - With `prefers-reduced-motion`, verify transitions are minimized.
-- **Minimal re‑renders:** `useSyncExternalStore` + external store; removal is delayed via `beforeDismiss` to avoid list reflow/jank.
-
----
-
-## Testing Instructions
-
-### Unit/Integration
-Covers store (stacking of newest, auto‑dismiss, manual dismiss, update/duration), viewport/item (position, theme, portal, a11y roles/live, Esc, focus), and the `useToast` hook.
-
-```bash
-npm run test
-```
-
-### E2E (Playwright)
-Covers **stacking**, **auto‑dismiss**, and **manual dismiss** in the demo app.
-
-```bash
-# install browsers once
-npx playwright install --with-deps
-
-# run e2e (dev server auto-starts)
-npm run test:e2e
-```
-
----
-
-## Project Structure
-
-```
-src/
-  core/            # headless store, types, provider/hook
-  ui/              # viewport + item (skin) + styles.css
-  dev/             # tiny demo app (dev only)
-tests/
-  unit/            # vitest + RTL
-  e2e/             # playwright
-```
-
----
-
-## License
+## 📄 License
 
 MIT © Contributors
