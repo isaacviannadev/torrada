@@ -20,7 +20,9 @@
       "types": "./dist/index.d.ts",
       "import": "./dist/index.js",
       "require": "./dist/index.cjs"
-    }
+    },
+    "./style.css": "./dist/torrada.css",
+    "./styles.css": "./dist/torrada.css"
   },
   "files": [
     "dist",
