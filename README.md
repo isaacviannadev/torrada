@@ -15,8 +15,6 @@ npm install torrada
 
 ## 📖 Quick Start
 
-### Basic Usage
-
 ```tsx
 import { ToastProvider, ToastViewport, useToast } from "torrada";
 import "torrada/style.css"; // default styles
@@ -45,35 +43,115 @@ export function App() {
 }
 ```
 
-### Advanced Features
+---
 
+## 🏗️ Overview & Design Rationale
+
+### Component API
+
+**Core Components:**
+- **`ToastProvider`**: Manages toast state and configuration
+- **`ToastViewport`**: Renders toasts in a specific position with theme
+- **`useToast`**: Hook providing toast creation, update, and dismiss methods
+
+**Key Architecture Decisions:**
+- **Headless store** built with `useSyncExternalStore` → minimal re-renders and small API surface
+- **Viewport rendered via portal** to `document.body` → avoids layout shift (CLS ≈ 0)
+- **UI skin implemented with CSS variables** → easy theming without locking consumers
+- **Exit control:** `beforeDismiss` hook to wait for exit animation before removing nodes
+
+**Trade-offs:**
+- **No animation dependencies**: Pure CSS (`transform`/`opacity`) for simplicity and performance
+- **Minimal global state**: Toast array not pushed through Context to avoid app-wide re-renders
+- **Portal-based rendering**: Slightly more complex setup but eliminates layout interference
+
+---
+
+## ⚙️ Setup Instructions
+
+### Repository Setup
+```bash
+# Clone the repository
+git clone https://github.com/isaacviannadev/torrada.git
+cd torrada
+
+# Install dependencies
+npm install
+
+# Start development server
+npm run dev
+
+# Build for production
+npm run build
+
+# Preview production build
+npm run preview
+```
+
+### Running Tests
+```bash
+# Unit and integration tests
+npm run test
+
+# Tests in watch mode
+npm run test:watch
+
+# End-to-end tests
+npm run test:e2e
+
+# Coverage report
+npm run coverage
+```
+
+---
+
+## 💡 Usage Examples
+
+### Basic Toast Creation
+```tsx
+const { toast } = useToast();
+
+// Simple success toast
+toast({ 
+  kind: "success", 
+  title: "Operation completed!" 
+});
+
+// Toast with description and custom duration
+toast({ 
+  kind: "info", 
+  title: "Processing...", 
+  description: "Please wait while we handle your request.",
+  duration: 3000 
+});
+```
+
+### Advanced Toast Management
 ```tsx
 const { toast, update, dismiss, dismissAll } = useToast();
 
-// Create toast
+// Create and update toast
 const id = toast({ title: "Uploading..." });
+update(id, { title: "Uploaded!", kind: "success", duration: 2500 });
 
-// Update toast
-update(id, { title: "Uploaded", kind: "success", duration: 2500 });
+// Dismiss specific toast
+dismiss(id);
 
-// Close toasts
-dismiss(id);    // close one
-dismissAll();   // close all
+// Dismiss all toasts
+dismissAll();
 ```
 
-## ⚙️ Configuration
-
-### ToastProvider
-
+### Provider Configuration
 ```tsx
 <ToastProvider
   max={5}                 // maximum number of stacked toasts
   defaultDuration={5000}  // default duration in ms
-/>
+>
+  <App />
+</ToastProvider>
 ```
 
-### ToastViewport
-
+### Viewport Configuration
 ```tsx
 <ToastViewport
   position="top-right"              // top|bottom x left|right|center
@@ -83,9 +161,12 @@ dismissAll();   // close all
 />
 ```
 
-## 🎨 Customization & Theming
+---
 
-The system uses **CSS variables** for easy customization:
+## 🎨 Theming & Customization
+
+### CSS Variables Override
+The system uses **CSS variables** for easy customization. Override them in your app theme:
 
 ```css
 :root {
@@ -104,24 +185,100 @@ The system uses **CSS variables** for easy customization:
 }
 ```
 
-**Useful classes:**
-- `.t-viewport` + position: `t-top-right`, `t-top-left`, `t-bottom-right`, `t-bottom-left`, `t-top-center`, `t-bottom-center`
-- Item: `.t-item` + kind: `.success | .error | .info | .warning`
+### Positioning Options
+**Available positions:**
+- `top-left`, `top-center`, `top-right`
+- `bottom-left`, `bottom-center`, `bottom-right`
 
-## ♿ Accessibility
+**CSS classes for custom positioning:**
+- `.t-viewport` + position: `t-top-right`, `t-top-left`, etc.
+- `.t-item` + kind: `.success`, `.error`, `.info`, `.warning`
 
+### Theme Switching
+- `ToastViewport` sets `data-theme="light|dark"`
+- Create additional themes with `[data-theme="custom"]` and override variables
+- Supports dynamic theme switching at runtime
+
+---
+
+## ♿ Accessibility Notes
+
+### Screen Reader Support
 - **Live regions:** each toast uses `role="status"` + `aria-live="polite"` by default
-- **Focus:** toasts **do not steal focus** when appearing
-- **Keyboard:** `Tab` to close button, `Enter/Space` to activate, `Esc` to close
-- **Screen readers:** full support with automatic announcements
-- **Reduced motion:** respects `prefers-reduced-motion`
+- **Error handling:** errors use `role="alert"` + `aria-live="assertive"`
+- **Atomic announcements:** `aria-atomic="true"` ensures complete toast content is read
 
-## ⚡ Performance
+### Keyboard Navigation
+- **Tab navigation:** `Tab` reaches the close button within each toast
+- **Activation:** `Enter/Space` activates the close button
+- **Dismissal:** `Esc` closes the currently focused toast
+- **Focus management:** toasts **do not steal focus** when appearing
 
-- **Zero CLS:** Viewport uses `position: fixed` to avoid layout shifts
-- **GPU-optimized animations:** only `opacity` and `transform` for performance
-- **Minimal re-renders:** uses `useSyncExternalStore` for optimization
-- **Animation timing:** enter and exit in 180ms
+### Motion Preferences
+- **Reduced motion:** fully respects `prefers-reduced-motion`
+- **Animation control:** animations disabled/shortened when motion is reduced
+- **Performance:** maintains smooth operation regardless of motion preferences
+
+---
+
+## ⚡ Performance Metrics
+
+### Animation Performance Budgets
+- **Enter animation:** **180ms** target duration
+- **Exit animation:** **180ms** target duration
+- **Expected CLS:** **≈ 0** (no layout shifts)
+- **GPU acceleration:** uses `transform` and `opacity` only
+
+### Rendering Performance
+- **Re-render optimization:** `useSyncExternalStore` minimizes unnecessary updates
+- **Memory management:** proper cleanup of dismissed toasts prevents memory leaks
+- **Bundle size:** optimized for minimal impact on application size
+
+### Measurement Tools
+- **DevTools Performance:** record FPS/timeline while spawning multiple toasts
+- **Lighthouse:** verify CLS ~0 and performance scores
+- **Accessibility testing:** validate with screen readers and keyboard navigation
+
+---
+
+## 🧪 Testing Instructions
+
+### Unit & Integration Tests
+**Coverage areas:**
+- Store logic (stacking, auto-dismiss, manual dismiss, update/duration)
+- Viewport & item components (position, theme, portal, accessibility)
+- Hook integration (`useToast` behavior, context integration)
+
+**Commands:**
+```bash
+# Run all tests
+npm run test
+
+# Run tests in watch mode
+npm run test:watch
+
+# Generate coverage report
+npm run coverage
+```
+
+### End-to-End Tests (Playwright)
+**Test scenarios:**
+- Toast stacking and positioning
+- Auto-dismiss functionality
+- Manual dismiss (close button, keyboard shortcuts)
+- User interactions and accessibility
+
+**Setup & execution:**
+```bash
+# Install Playwright browsers (one-time setup)
+npx playwright install --with-deps
+
+# Run E2E tests (dev server auto-starts)
+npm run test:e2e
+
+# Run specific test file
+npx playwright test tests/e2e/toast.spec.ts
+```
 
 ---
 

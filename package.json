@@ -11,7 +11,7 @@
   "bugs": {
     "url": "https://github.com/isaacviannadev/torrada/issues"
   },
-  "homepage": "https://github.com/isaacviannadev/torrada#readme",
+  "homepage": "https://torrada.eu",
   "main": "./dist/index.cjs",
   "module": "./dist/index.js",
   "types": "./dist/index.d.ts",

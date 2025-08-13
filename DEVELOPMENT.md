@@ -1,30 +1,10 @@
 # Development Guide
 
-This document contains detailed information about the Torrada project architecture, development setup, testing, and contribution guidelines.
+This document contains detailed information about the Torrada project development setup, testing, and contribution guidelines. For usage instructions and API documentation, see the main [README.md](./README.md).
 
-## 🏗️ Architecture & Design
+## 🏗️ Project Architecture
 
-### Core Principles
-
-**Headless Store Design**
-- **Store headless** (no UI) built with `useSyncExternalStore` → minimal re-renders and a small API surface
-- **Viewport** rendered via **portal** to `document.body` → avoids **layout shift** (CLS ≈ 0) and layout interference
-- **UI skin** implemented with **CSS variables** → easy theming and branding without locking consumers
-- **Exit control:** `beforeDismiss` hook in the store (injected by the Viewport) to **wait for exit animation** before removing the node, preventing jank
-
-**Performance Optimizations**
-- No animation dependencies: we use **pure CSS** (`transform`/`opacity`) for simplicity and performance
-- Minimal global state: we do not push the toast array through Context to avoid app-wide re-renders
-- **Zero CLS:** Viewport uses `position: fixed` to avoid layout shifts
-- **GPU-friendly animations:** only `opacity` and `transform` for optimal performance
-
-**Accessibility Features**
-- **Live regions:** each toast uses `role="status"` + `aria-live="polite"` by default. Errors use `role="alert"` / `aria-live="assertive"`. `aria-atomic="true"` ensures the whole block is read
-- **Focus management:** toasts **do not steal focus** on mount. Close via **Esc** when focus is inside the toast; close button has `aria-label="Close notification"`
-- **Keyboard navigation:** `Tab` reaches the close button; `Enter/Space` activates; `Esc` closes
-- **Reduced motion:** honored via `prefers-reduced-motion`; animations disabled/shortened accordingly
-
-## 📁 Project Structure
+### Core Structure
 
 ```
 src/
@@ -52,47 +32,73 @@ tests/
   setup.ts         # test configuration
 ```
 
+### Technical Implementation Details
+
+**Store Architecture:**
+- Uses `useSyncExternalStore` for minimal re-renders
+- Implements `beforeDismiss` hook for animation coordination
+- Manages toast lifecycle (create, update, dismiss, auto-dismiss)
+
+**Portal Implementation:**
+- Renders toasts via `createPortal` to `document.body`
+- Prevents layout shifts and interference with app content
+- Maintains proper z-index stacking
+
+**CSS Architecture:**
+- CSS variables for theming and customization
+- Utility classes for positioning and styling
+- Responsive design considerations
+
 ## 🧪 Testing Strategy
 
-### Unit & Integration Tests
+### Test Coverage Goals
 
-**Coverage Areas:**
-- **Store Logic:** stacking of newest toasts, auto-dismiss functionality, manual dismiss, update/duration handling
-- **Viewport & Item Components:** position calculations, theme switching, portal rendering, accessibility roles and live regions
-- **Hook Integration:** `useToast` hook behavior, context integration, state management
-- **Accessibility:** keyboard navigation, screen reader support, focus management
+**Unit Tests (90%+ coverage target):**
+- Store logic and state management
+- Component rendering and props
+- Hook behavior and context integration
+- Utility functions and helpers
 
-**Running Tests:**
+**Integration Tests:**
+- Component interactions
+- Context provider behavior
+- Toast lifecycle management
+
+**E2E Tests:**
+- User interactions and workflows
+- Cross-browser compatibility
+- Accessibility compliance
+
+### Running Tests
+
 ```bash
-# Run all tests
+# Unit and integration tests
 npm run test
 
-# Run tests in watch mode
+# Tests in watch mode
 npm run test:watch
 
 # Generate coverage report
 npm run coverage
-```
 
-### End-to-End Tests (Playwright)
-
-**Test Scenarios:**
-- **Toast Stacking:** verify multiple toasts stack correctly
-- **Auto-dismiss:** ensure toasts disappear after specified duration
-- **Manual Dismiss:** test close button and keyboard shortcuts
-- **User Interactions:** validate toast creation, updates, and removal
-
-**Setup & Execution:**
-```bash
-# Install Playwright browsers (one-time setup)
-npx playwright install --with-deps
-
-# Run E2E tests (dev server auto-starts)
+# End-to-end tests
 npm run test:e2e
 
 # Run specific test file
 npx playwright test tests/e2e/toast.spec.ts
 ```
+
+### Test Environment Setup
+
+**Vitest Configuration:**
+- JSDOM environment for DOM testing
+- React Testing Library for component testing
+- Coverage reporting with v8
+
+**Playwright Configuration:**
+- Chromium, Firefox, and WebKit browsers
+- Visual regression testing support
+- Accessibility testing integration
 
 ## 🚀 Development Setup
 
@@ -140,24 +146,6 @@ npm run preview
    - Verify build output
    - Test in demo application
 
-## 📊 Performance Benchmarks
-
-### Animation Performance
-- **Enter animation:** 180ms target
-- **Exit animation:** 180ms target  
-- **Expected CLS:** ≈ 0 (no layout shifts)
-- **GPU acceleration:** uses `transform` and `opacity` only
-
-### Rendering Performance
-- **Re-render optimization:** `useSyncExternalStore` minimizes unnecessary updates
-- **Memory management:** proper cleanup of dismissed toasts
-- **Bundle size:** optimized for minimal impact
-
-### Measurement Tools
-- **DevTools Performance:** record FPS/timeline while spawning multiple toasts
-- **Lighthouse:** verify CLS ~0 and performance scores
-- **Accessibility:** test with screen readers and keyboard navigation
-
 ## 🔧 Build Configuration
 
 ### Vite Configuration
@@ -172,7 +160,26 @@ npm run preview
 - **Path mapping** for clean imports
 - **Build-time validation** of all types
 
-## 📝 Contributing
+### Package Configuration
+- **Exports** configured for ESM and CommonJS
+- **Side effects** marked for CSS files
+- **Peer dependencies** for React compatibility
+- **Files** included in npm package
+
+## 📊 Performance Monitoring
+
+### Development Tools
+- **React DevTools Profiler** for component performance
+- **Chrome DevTools Performance** for animation timing
+- **Lighthouse CI** for performance regression detection
+
+### Metrics to Track
+- **Animation frame rates** during toast spawning
+- **Memory usage** with multiple toasts
+- **Bundle size** impact of changes
+- **Accessibility** compliance scores
+
+## 📝 Contributing Guidelines
 
 ### Code Standards
 - **TypeScript:** strict typing, no `any` types
@@ -197,7 +204,7 @@ npm run preview
 
 ## 🐛 Troubleshooting
 
-### Common Issues
+### Common Development Issues
 
 **Build Failures**
 - Check TypeScript compilation errors
@@ -214,6 +221,11 @@ npm run preview
 - Verify Vite configuration
 - Clear browser cache if needed
 
+**TypeScript Issues**
+- Verify type definitions are correct
+- Check for circular dependencies
+- Ensure proper import/export paths
+
 ## 📚 Additional Resources
 
 - [React Documentation](https://react.dev/)
@@ -221,6 +233,7 @@ npm run preview
 - [Vite Guide](https://vitejs.dev/guide/)
 - [Playwright Testing](https://playwright.dev/)
 - [Vitest Documentation](https://vitest.dev/)
+- [React Testing Library](https://testing-library.com/docs/react-testing-library/intro/)
 
 ---
 
