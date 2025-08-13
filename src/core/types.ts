@@ -1,5 +1,7 @@
 export type ToastKind = 'success' | 'error' | 'info' | 'warning';
 
+export type DismissReason = 'auto' | 'manual';
+
 export type ToastOptions = {
   id?: string;
   title?: string;
@@ -19,6 +21,7 @@ export type ToastRecord = Required<Pick<ToastOptions, 'id'>> & {
 export type ToastStoreConfig = {
   max: number; // maximum toasts in the stack
   defaultDuration: number; // default duration (ms)
+  beforeDismiss?: (id: string, reason: DismissReason) => void | Promise<void>;
 };
 
 export type ToastStore = {

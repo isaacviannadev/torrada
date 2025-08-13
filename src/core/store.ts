@@ -1,4 +1,5 @@
 import {
+  DismissReason,
   ToastOptions,
   ToastRecord,
   ToastStore,
@@ -38,7 +39,7 @@ export function createToastStore(
   const scheduleAuto = (id: string, duration: number) => {
     clearAuto(id);
     const t = setTimeout(() => {
-      api.dismiss(id);
+      void performDismiss(id, 'auto');
     }, duration);
     timers.set(id, t);
   };
@@ -99,10 +100,7 @@ export function createToastStore(
     },
 
     dismiss(id) {
-      const before = toasts.length;
-      toasts = toasts.filter((t) => t.id !== id);
-      clearAuto(id);
-      if (toasts.length !== before) emit();
+      void performDismiss(id, 'manual');
     },
 
     dismissAll() {
@@ -116,6 +114,20 @@ export function createToastStore(
       emit();
     },
   };
+
+  async function performDismiss(id: string, reason: DismissReason) {
+    try {
+      const maybe = config.beforeDismiss?.(id, reason);
+      if (maybe && typeof (maybe as any).then === 'function') {
+        await maybe; // espera animação/atraso
+      }
+    } finally {
+      const before = toasts.length;
+      toasts = toasts.filter((t) => t.id !== id);
+      clearAuto(id);
+      if (toasts.length !== before) emit();
+    }
+  }
 
   return api;
 }

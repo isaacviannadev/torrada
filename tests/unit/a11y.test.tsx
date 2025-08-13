@@ -16,7 +16,7 @@ function DemoOnce(props: {
 }
 
 describe('a11y', () => {
-  it('usa role=status e aria-live=polite por padrão', async () => {
+  it('uses role=status and aria-live=polite by default', async () => {
     render(
       <ToastProvider>
         <DemoOnce title='Polite' />
@@ -24,14 +24,13 @@ describe('a11y', () => {
       </ToastProvider>
     );
     const el = await screen.findByText('Polite');
-    // o contêiner com role está no ancestor (t-item)
     const item = el.closest('.t-item')!;
     expect(item).toHaveAttribute('role', 'status');
     expect(item).toHaveAttribute('aria-live', 'polite');
     expect(item).toHaveAttribute('aria-atomic', 'true');
   });
 
-  it('erros sobem para assertive automaticamente', async () => {
+  it('errors are automatically raised to assertive', async () => {
     render(
       <ToastProvider>
         <DemoOnce kind='error' title='Boom' />
@@ -44,7 +43,7 @@ describe('a11y', () => {
     expect(item).toHaveAttribute('aria-live', 'assertive');
   });
 
-  it('botão de fechar é acessível por rótulo e Esc fecha', async () => {
+  it('close button is accessible by label and Esc closes', async () => {
     render(
       <ToastProvider>
         <DemoOnce title='CloseMe' />
@@ -53,22 +52,21 @@ describe('a11y', () => {
     );
     const itemText = await screen.findByText('CloseMe');
     const item = itemText.closest('.t-item')!;
-    // botão close acessível
     const closeBtn = screen.getByRole('button', {
       name: /close notification/i,
     });
     expect(closeBtn).toBeInTheDocument();
 
-    // envia ESC para o item
     item.dispatchEvent(
       new KeyboardEvent('keydown', { key: 'Escape', bubbles: true })
     );
-    // aguarda sumir
-    await screen.findByRole('region', { name: /notifications/i }); // viewport continua
+
+    // Aguarda a remoção do toast (considerando o delay da animação)
+    await new Promise((resolve) => setTimeout(resolve, 200));
     expect(screen.queryByText('CloseMe')).toBeNull();
   });
 
-  it('não rouba foco ao montar', async () => {
+  it('does not steal focus when mounting', async () => {
     render(
       <ToastProvider>
         <DemoOnce title='NoFocus' />
@@ -76,7 +74,6 @@ describe('a11y', () => {
       </ToastProvider>
     );
     await screen.findByText('NoFocus');
-    // foco permanece no body (ou no que estiver ativo no teste)
     expect(document.activeElement === document.body).toBe(true);
   });
 });

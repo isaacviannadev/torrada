@@ -144,3 +144,49 @@
   outline: 2px solid currentColor;
   outline-offset: 2px;
 }
+
+/* ===== Animations (GPU-friendly: transform/opacity) ===== */
+:root {
+  --t-exit-ms: 180;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .t-item {
+    animation: none !important;
+  }
+  .t-item.leaving {
+    animation: none !important;
+    opacity: 0 !important;
+  }
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .t-item {
+    animation: t-in 180ms ease-out both;
+    will-change: transform, opacity;
+  }
+  .t-item.leaving {
+    animation: t-out var(--t-exit-ms) ms ease-in both;
+  }
+}
+
+@keyframes t-in {
+  from {
+    opacity: 0;
+    transform: translateY(-8px) scale(0.98);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+@keyframes t-out {
+  from {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+  to {
+    opacity: 0;
+    transform: translateY(-8px) scale(0.98);
+  }
+}
