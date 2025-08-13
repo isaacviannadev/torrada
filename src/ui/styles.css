@@ -150,6 +150,50 @@
   height: 24px;
 }
 
+/* ===== Custom Toast Styles ===== */
+.t-item.custom {
+  border-left: 4px solid #8b5cf6; /* Purple for custom */
+}
+
+.t-custom-content {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.t-custom-icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 24px;
+  height: 24px;
+  flex-shrink: 0;
+}
+
+.t-custom-actions {
+  display: flex;
+  gap: 8px;
+  margin-top: 8px;
+  flex-wrap: wrap;
+}
+
+.t-custom-actions button {
+  padding: 4px 8px;
+  background: transparent;
+  border: 1px solid var(--toast-border);
+  border-radius: 4px;
+  font-size: 0.875rem;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.t-custom-actions button:hover {
+  background: var(--toast-border);
+  color: var(--toast-fg);
+}
+
 /* ===== Animations (GPU-friendly: transform/opacity) ===== */
 :root {
   --t-exit-ms: 180;

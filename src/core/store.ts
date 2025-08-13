@@ -62,6 +62,11 @@ export function createToastStore(
         kind: opts.kind ?? 'info',
         createdAt: Date.now(),
         duration: opts.duration ?? config.defaultDuration,
+        customContent: opts.customContent,
+        customClassName: opts.customClassName,
+        customStyle: opts.customStyle,
+        customIcon: opts.customIcon,
+        customActions: opts.customActions,
       };
 
       const withNew = [record, ...toasts];

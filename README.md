@@ -141,6 +141,76 @@ dismiss(id);
 dismissAll();
 ```
 
+### Custom Toast
+Create highly customizable toasts with JSX content, custom icons, actions, and styling:
+
+```tsx
+const { customToast } = useToast();
+
+// Custom content toast
+customToast({
+  customContent: (
+    <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
+      <div
+        style={{
+          width: '40px',
+          height: '40px',
+          borderRadius: '50%',
+          background: 'linear-gradient(45deg, #ff6b6b, #4ecdc4)',
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'center',
+          color: 'white',
+          fontSize: '20px',
+        }}
+      >
+        🎨
+      </div>
+      <div>
+        <div style={{ fontWeight: 'bold' }}>Design System</div>
+        <div style={{ fontSize: '14px', opacity: 0.8 }}>
+          Custom notification
+        </div>
+      </div>
+    </div>
+  ),
+  duration: 8000,
+});
+
+// Toast with custom icon and actions
+customToast({
+  title: 'Interactive Toast',
+  description: 'Click the buttons below to interact',
+  customIcon: <span style={{ fontSize: '24px' }}>⭐</span>,
+  customActions: (
+    <>
+      <button onClick={() => console.log('Action 1')}>Action 1</button>
+      <button onClick={() => console.log('Action 2')}>Action 2</button>
+    </>
+  ),
+});
+
+// Custom styled toast
+customToast({
+  title: 'Styled Toast',
+  customStyle: {
+    background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
+    color: 'white',
+    border: 'none',
+  },
+  customClassName: 'my-custom-toast',
+});
+```
+
+**Custom Toast Features:**
+- **`customContent`**: Complete JSX content replacement
+- **`customIcon`**: Custom icon element
+- **`customActions`**: Interactive buttons and controls
+- **`customStyle`**: Inline CSS styles
+- **`customClassName`**: Custom CSS classes
+
+For detailed documentation, see **[CUSTOM_TOAST.md](./CUSTOM_TOAST.md)**.
+
 ### Provider Configuration
 ```tsx
 <ToastProvider

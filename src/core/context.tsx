@@ -39,6 +39,8 @@ export function useToast() {
     dismissAll: () => store.dismissAll(),
     update: (id: string, patch: Partial<Omit<ToastOptions, 'id'>>) =>
       store.update(id, patch as any),
+    customToast: (opts: Omit<ToastOptions, 'kind'>) =>
+      store.add({ ...opts, kind: 'custom' }),
     _store: store,
   };
 }

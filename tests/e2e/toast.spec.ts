@@ -2,7 +2,10 @@ import { expect, test } from '@playwright/test';
 
 test('spawn success and manual dismiss', async ({ page }) => {
   await page.goto('/');
-  await page.getByRole('button', { name: 'Success' }).click();
+
+  await page.waitForLoadState('networkidle');
+
+  await page.locator('button:has-text("Success")').first().click();
   await expect(page.getByText('Saved!')).toBeVisible();
 
   await page.getByRole('button', { name: /close notification/i }).click();
@@ -11,7 +14,10 @@ test('spawn success and manual dismiss', async ({ page }) => {
 
 test('stacking and auto-dismiss', async ({ page }) => {
   await page.goto('/');
-  await page.getByRole('button', { name: 'Spawn x3' }).click();
+
+  await page.waitForLoadState('networkidle');
+
+  await page.locator('button:has-text("Spawn x3")').first().click();
 
   await expect(page.locator('.t-item')).toHaveCount(3);
 

@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 import { ToastProvider, ToastViewport, ToastViewportProps, useToast } from '..';
 
 function Controls() {
@@ -115,17 +115,13 @@ function ControlsPositions({
   const { toast, dismissAll } = useToast();
 
   const positions: ToastViewportProps['position'][] = [
-    'top-right',
     'top-left',
     'top-center',
-    'bottom-right',
+    'top-right',
     'bottom-left',
     'bottom-center',
+    'bottom-right',
   ];
-
-  useEffect(() => {
-    dismissAll();
-  }, [currentPosition]);
 
   return (
     <div style={{ padding: 16 }}>
@@ -137,8 +133,13 @@ function ControlsPositions({
               key={position}
               id={`position-${position}`}
               onClick={() => {
-                onPositionChange(position);
-                toast({ title: currentPosition });
+                if (position !== currentPosition) {
+                  dismissAll();
+                  onPositionChange(position);
+                  toast({ title: `Position changed from ${currentPosition}` });
+                } else {
+                  toast({ title: currentPosition });
+                }
               }}
               style={{
                 padding: '8px 16px',
@@ -208,6 +209,204 @@ function UpdateControls() {
   );
 }
 
+function CustomToastControls() {
+  const { customToast, toast } = useToast();
+
+  const handleCustomContentToast = () => {
+    customToast({
+      title: 'Custom Content',
+      customContent: (
+        <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
+          <div
+            style={{
+              width: '40px',
+              height: '40px',
+              borderRadius: '50%',
+              background: 'linear-gradient(45deg, #ff6b6b, #4ecdc4)',
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              color: 'white',
+              fontSize: '20px',
+            }}
+          >
+            🎨
+          </div>
+          <div>
+            <div style={{ fontWeight: 'bold', marginBottom: '4px' }}>
+              Design System
+            </div>
+            <div style={{ fontSize: '14px', opacity: 0.8 }}>
+              Custom styled notification
+            </div>
+          </div>
+        </div>
+      ),
+      duration: 8000,
+    });
+  };
+
+  const handleCustomIconToast = () => {
+    customToast({
+      title: 'Custom Icon Toast',
+      description: 'This toast has a custom icon and actions',
+      customIcon: (
+        <div
+          style={{
+            width: '24px',
+            height: '24px',
+            borderRadius: '50%',
+            background: '#8b5cf6',
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+            color: 'white',
+            fontSize: '14px',
+          }}
+        >
+          ⭐
+        </div>
+      ),
+      customActions: (
+        <>
+          <button onClick={() => toast({ kind: 'success', title: 'Liked!' })}>
+            👍 Like
+          </button>
+          <button onClick={() => toast({ kind: 'info', title: 'Shared!' })}>
+            📤 Share
+          </button>
+        </>
+      ),
+      duration: 10000,
+    });
+  };
+
+  const handleCustomStyleToast = () => {
+    customToast({
+      title: 'Custom Styled',
+      description: 'Toast with custom styling and layout',
+      customClassName: 'custom-gradient-toast',
+      customStyle: {
+        background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
+        color: 'white',
+        border: 'none',
+        boxShadow: '0 10px 30px rgba(102, 126, 234, 0.4)',
+      },
+      duration: 6000,
+    });
+  };
+
+  const handleInteractiveToast = () => {
+    customToast({
+      title: 'Interactive Toast',
+      description: 'Click the buttons below to interact',
+      customActions: (
+        <>
+          <button
+            onClick={() =>
+              toast({ kind: 'success', title: 'Action 1 executed!' })
+            }
+            style={{
+              background: '#10b981',
+              color: 'white',
+              border: 'none',
+              padding: '6px 12px',
+              borderRadius: '6px',
+            }}
+          >
+            Action 1
+          </button>
+          <button
+            onClick={() =>
+              toast({ kind: 'warning', title: 'Action 2 executed!' })
+            }
+            style={{
+              background: '#f59e0b',
+              color: 'white',
+              border: 'none',
+              padding: '6px 12px',
+              borderRadius: '6px',
+            }}
+          >
+            Action 2
+          </button>
+        </>
+      ),
+      duration: 12000,
+    });
+  };
+
+  return (
+    <div style={{ padding: 16 }}>
+      <h3 style={{ margin: '0 0 16px 0', color: '#8b5cf6' }}>
+        Custom Toast Examples
+      </h3>
+      <div style={{ display: 'flex', gap: 8, flexWrap: 'wrap' }}>
+        <button
+          id='custom-content-toast'
+          style={{
+            padding: '8px 16px',
+            backgroundColor: '#8b5cf6',
+            color: 'white',
+            border: 'none',
+            borderRadius: '4px',
+            cursor: 'pointer',
+            fontWeight: 'normal',
+          }}
+          onClick={handleCustomContentToast}
+        >
+          Custom Content
+        </button>
+        <button
+          id='custom-icon-toast'
+          style={{
+            padding: '8px 16px',
+            backgroundColor: '#8b5cf6',
+            color: 'white',
+            border: 'none',
+            borderRadius: '4px',
+            cursor: 'pointer',
+            fontWeight: 'normal',
+          }}
+          onClick={handleCustomIconToast}
+        >
+          Custom Icon + Actions
+        </button>
+        <button
+          id='custom-style-toast'
+          style={{
+            padding: '8px 16px',
+            backgroundColor: '#8b5cf6',
+            color: 'white',
+            border: 'none',
+            borderRadius: '4px',
+            cursor: 'pointer',
+            fontWeight: 'normal',
+          }}
+          onClick={handleCustomStyleToast}
+        >
+          Custom Styling
+        </button>
+        <button
+          id='interactive-toast'
+          style={{
+            padding: '8px 16px',
+            backgroundColor: '#8b5cf6',
+            color: 'white',
+            border: 'none',
+            borderRadius: '4px',
+            cursor: 'pointer',
+            fontWeight: 'normal',
+          }}
+          onClick={handleInteractiveToast}
+        >
+          Interactive
+        </button>
+      </div>
+    </div>
+  );
+}
+
 export function App() {
   const [currentPosition, setCurrentPosition] =
     useState<ToastViewportProps['position']>('top-right');
@@ -220,6 +419,7 @@ export function App() {
         onPositionChange={setCurrentPosition}
       />
       <UpdateControls />
+      <CustomToastControls />
       <ToastViewport position={currentPosition} theme='light' />
     </ToastProvider>
   );

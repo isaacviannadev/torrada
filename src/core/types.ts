@@ -1,4 +1,6 @@
-export type ToastKind = 'success' | 'error' | 'info' | 'warning';
+import type React from 'react';
+
+export type ToastKind = 'success' | 'error' | 'info' | 'warning' | 'custom';
 
 export type DismissReason = 'auto' | 'manual';
 
@@ -8,6 +10,11 @@ export type ToastOptions = {
   description?: string;
   kind?: ToastKind;
   duration?: number; // ms
+  customContent?: React.ReactNode;
+  customClassName?: string;
+  customStyle?: React.CSSProperties;
+  customIcon?: React.ReactNode;
+  customActions?: React.ReactNode;
 };
 
 export type ToastRecord = Required<Pick<ToastOptions, 'id'>> & {
@@ -16,6 +23,11 @@ export type ToastRecord = Required<Pick<ToastOptions, 'id'>> & {
   kind: ToastKind;
   createdAt: number;
   duration: number;
+  customContent?: React.ReactNode;
+  customClassName?: string;
+  customStyle?: React.CSSProperties;
+  customIcon?: React.ReactNode;
+  customActions?: React.ReactNode;
 };
 
 export type ToastStoreConfig = {
