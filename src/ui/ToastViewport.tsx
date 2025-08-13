@@ -82,7 +82,6 @@ export function ToastViewport({
     });
   }, [_store, exitDelay]);
 
-  // Atualiza a variável CSS para sincronizar com a animação
   useEffect(() => {
     if (typeof document !== 'undefined') {
       document.documentElement.style.setProperty(

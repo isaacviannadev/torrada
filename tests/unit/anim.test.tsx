@@ -56,7 +56,6 @@ describe('animations', () => {
       expect(root.className).toMatch(/leaving/);
     });
 
-    // Deve demorar mais tempo para desaparecer com animationMs=500
     await vi.waitFor(
       () => {
         expect(screen.queryByText('Bye')).toBeNull();
@@ -77,16 +76,13 @@ describe('animations', () => {
     const item = await screen.findByText('Bye');
     const root = item.closest('.t-item')!;
 
-    // Verifica que não tem a classe leaving inicialmente
     expect(root.className).not.toMatch(/leaving/);
 
     const close = screen.getByRole('button', { name: /close notification/i });
     fireEvent.click(close);
 
-    // Verifica que a classe leaving é aplicada imediatamente
     expect(root.className).toMatch(/leaving/);
 
-    // Aguarda a remoção
     await vi.waitFor(
       () => {
         expect(screen.queryByText('Bye')).toBeNull();
