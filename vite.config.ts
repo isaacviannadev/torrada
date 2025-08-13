@@ -1,3 +1,4 @@
+// vite.config.ts
 import react from '@vitejs/plugin-react';
 import { defineConfig } from 'vite';
 
@@ -19,5 +20,7 @@ export default defineConfig({
     environment: 'jsdom',
     setupFiles: ['./tests/setup.ts'],
     css: true,
+    include: ['tests/unit/**/*.{test,spec}.ts?(x)'],
+    exclude: ['tests/e2e/**', 'node_modules', 'dist'],
   },
 });
