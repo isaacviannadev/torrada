@@ -1,0 +1,10 @@
+# deps
+node_modules/
+# build
+/dist/
+.vite/
+# tests
+coverage/
+# misc
+.DS_Store
+.env

@@ -1,0 +1,1 @@
+{"root":["./src/index.ts","./src/core/context.tsx","./src/core/store.ts","./src/core/types.ts","./src/ui/toastviewport.tsx","./tests/setup.ts","./tests/unit/exemple-usage.test.tsx","./tests/unit/store.test.ts","./vite.config.ts"],"version":"5.9.2"}
