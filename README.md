@@ -19,6 +19,7 @@ npm install torrada
 
 ```tsx
 import { ToastProvider, ToastViewport, useToast } from "torrada";
+import "torrada/style.css"; // default styles
 
 function Page() {
   const { toast } = useToast();
