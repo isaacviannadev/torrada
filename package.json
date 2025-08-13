@@ -22,7 +22,7 @@
       "require": "./dist/index.cjs"
     },
     "./style.css": "./dist/torrada.css",
-    "./styles.css": "./dist/torrada.css"
+    "./torrada.css": "./dist/torrada.css"
   },
   "files": [
     "dist",
