@@ -34,7 +34,7 @@
   },
   "scripts": {
     "dev": "vite",
-    "build": "tsc -p tsconfig.build.json && vite build",
+    "build": "vite build && tsc -p tsconfig.build.json",
     "preview": "vite preview",
     "test": "vitest run",
     "test:watch": "vitest",
