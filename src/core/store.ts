@@ -119,7 +119,7 @@ export function createToastStore(
     try {
       const maybe = config.beforeDismiss?.(id, reason);
       if (maybe && typeof (maybe as any).then === 'function') {
-        await maybe; // espera animação/atraso
+        await maybe;
       }
     } finally {
       const before = toasts.length;
