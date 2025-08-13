@@ -1,6 +1,6 @@
 {
   "name": "torrada",
-  "version": "0.0.8",
+  "version": "0.1.0",
   "description": "Reusable, accessible toast system for React",
   "license": "MIT",
   "type": "module",
