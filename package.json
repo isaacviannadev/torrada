@@ -4,6 +4,14 @@
   "description": "Reusable, accessible toast system for React",
   "license": "MIT",
   "type": "module",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/isaacviannadev/torrada.git"
+  },
+  "bugs": {
+    "url": "https://github.com/isaacviannadev/torrada/issues"
+  },
+  "homepage": "https://github.com/isaacviannadev/torrada#readme",
   "main": "./dist/index.cjs",
   "module": "./dist/index.js",
   "types": "./dist/index.d.ts",
