@@ -61,7 +61,6 @@ describe('a11y', () => {
       new KeyboardEvent('keydown', { key: 'Escape', bubbles: true })
     );
 
-    // Aguarda a remoção do toast (considerando o delay da animação)
     await new Promise((resolve) => setTimeout(resolve, 200));
     expect(screen.queryByText('CloseMe')).toBeNull();
   });

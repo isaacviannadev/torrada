@@ -16,6 +16,6 @@
 
     "types": ["vitest/globals", "@testing-library/jest-dom"]
   },
-  "include": ["src", "vite.config.ts"],
-  "exclude": ["tests", "node_modules", "dist"]
+  "include": ["src", "vite.config.ts", "tests", "vitest.d.ts"],
+  "exclude": ["node_modules", "dist"]
 }
