@@ -17,15 +17,23 @@ export function ToastItem({
   style,
 }: Props) {
   const role =
-    toast.kind === 'error' || announce === 'assertive' ? 'alert' : 'status';
-  const ariaLive = role === 'alert' ? 'assertive' : 'polite';
+    announce === 'assertive' || toast.kind === 'error' ? 'alert' : 'status';
+  const ariaLive: 'polite' | 'assertive' =
+    role === 'alert' ? 'assertive' : 'polite';
 
   return (
     <div
       className={['t-item', toast.kind, className].filter(Boolean).join(' ')}
       role={role}
       aria-live={ariaLive}
+      aria-atomic='true'
       style={style}
+      onKeyDown={(e) => {
+        if (e.key === 'Escape') {
+          e.stopPropagation();
+          onClose(toast.id);
+        }
+      }}
     >
       <div className='t-row'>
         <div className='t-col' style={{ flex: 1 }}>
